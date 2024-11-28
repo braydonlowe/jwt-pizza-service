@@ -63,6 +63,9 @@ jobs:
       - name: Tests
         run: npm test
 
+      - name: Run Tests with Coverage
+        run: npm test -- --coverage
+
       - name: set version
         id: set_version
         run: |
