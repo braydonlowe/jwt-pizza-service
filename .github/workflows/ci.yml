@@ -5,14 +5,12 @@ on:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set_version.outputs.version }}
-
     services:
       mysql:
         image: mysql:8.0.29
@@ -27,7 +25,6 @@ jobs:
           --health-start-period 10s
           --health-timeout 5s
           --health-retries 10
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
