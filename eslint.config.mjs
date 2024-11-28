@@ -1,20 +1,24 @@
 import globals from "globals";
-import pluginJs from "@eslint/js";
+import js from "@eslint/js";
 
 export default [
+  js.configs.recommended,
   {
     files: ["**/*.js"],
     languageOptions: {
-      sourceType: "commonjs",
+      ecmaVersion: 2022,
+      sourceType: "module",
       globals: {
         ...globals.node
       }
     }
   },
   {
+    files: ["**/__tests__/**/*.js", "**/*.test.js"],
     languageOptions: {
-      globals: globals.browser
+      globals: {
+        ...globals.jest
+      }
     }
-  },
-  pluginJs.configs.recommended,
+  }
 ];
