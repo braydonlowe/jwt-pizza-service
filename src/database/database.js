@@ -353,5 +353,6 @@ class DB {
   }
 }
 
+
 const db = new DB();
 module.exports = { Role, DB: db };
