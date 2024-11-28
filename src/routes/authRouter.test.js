@@ -1,4 +1,6 @@
 const request = require('supertest');
+console.log(require.resolve('../service'));  // Log the path of the resolved module
+
 const app = require('../service');
 
 const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
