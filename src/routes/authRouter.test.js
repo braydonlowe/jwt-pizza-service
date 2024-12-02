@@ -64,7 +64,6 @@ test('Negative: Update Admin User', async () => {
   const adminResponse = await request(app)
     .put('/api/auth')
     .send(admin);
-  const adminAuth = adminResponse.body.token;
   const adminId = adminResponse.body.user.id;
   const updateObject = {
     email: 'theBestEmailEver@email.com',
