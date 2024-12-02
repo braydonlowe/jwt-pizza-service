@@ -94,6 +94,13 @@ test('CreateOrder', async () => {
 
     expect(response.status).toBe(200);
 
+    const getResponse = await request(app)
+        .get('/api/order')
+        .set('Authorization', `Bearer ${userAuth}`)
+        .send();
+
+    expect(getResponse.status).toBe(200);
+
 });
 
 
