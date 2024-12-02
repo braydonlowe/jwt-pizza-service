@@ -14,7 +14,7 @@ async function createTestUser(options = {}) {
   const registerRes = await request(app).post('/api/auth').send(user);
   const testUserAuthToken = registerRes.body.token;
 
-  return { ...user, token: testUserAuthToken };
+  return { ...user, token: testUserAuthToken, response: registerRes };
 }
 
 module.exports = { createTestUser };

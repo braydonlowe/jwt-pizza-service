@@ -3,6 +3,9 @@ const request = require('supertest');
 const { createAdminUser } = require('../utils/createAdminUser');
 const { createTestUser } = require('../utils/createUser');
 const randomName = require('../utils/randomName');
+const { createFranchise } = require('../utils/createFranchise');
+const { createStore } = require('../utils/createStore');
+const { createFranchiseAndStore } = require('../utils/createFranchiseAndStore');
 
 
 let admin;
@@ -10,42 +13,7 @@ let adminAuth;
 
 let user;
 let userAuth;
-
-async function createFranchise(authToken, franchiseObject) {
-  const franchiseResponse = await request(app)
-    .post('/api/franchise')
-    .set('Authorization', `Bearer ${authToken}`)
-    .send(franchiseObject);
-
-  return franchiseResponse;
-}
-
-
-async function createStore(authToken, franchiseID, storeObject) {
-  const storeResponse = await request(app)
-      .post(`/api/franchise/${franchiseID}/store`)
-      .set('Authorization', `Bearer ${authToken}`)
-      .send(storeObject);
-    
-  return storeResponse;
-}
-
-
-async function createFranchiseAndStore(adminToken) {
-    const franchise = {
-      name: randomName(),
-      admins: [{ email: user.email }],
-    };
-  
-    const franchiseResponse = await createFranchise(adminToken, franchise);
-    const franchiseId = franchiseResponse.body.id;
-  
-    const store = { name: randomName() };
-    const storeResponse = await createStore(adminToken, franchiseId, store)
-  
-    return [franchiseResponse, storeResponse];
-  }
-
+let userID;
 
 beforeAll(async () => {
     admin = await createAdminUser();
@@ -54,6 +22,7 @@ beforeAll(async () => {
 
     user = await createTestUser();
     userAuth = user.token;
+    userID = user.response.body.user.id;
 });
 
 
@@ -82,8 +51,22 @@ test('Get Franch', async () => {
 });
 
 
+test('Get User Franch', async () => {
+  const franch = {
+    name: randomName(),
+    admins: [{ email: user.email }]
+  };
+  const createResponse = await createFranchise(adminAuth, franch);
+  expect(createResponse.status).toBe(200);
+  const response = await request(app)
+    .get(`/api/franchise/${userID}`)
+    .set('Authorization', `Bearer ${userAuth}`)
+  expect(response.status).toBe(200);
+})
+
+
 test('Create and Delete Store', async () => {
-    const [franchiseResponse, storeResponse] = await createFranchiseAndStore(adminAuth);
+    const [franchiseResponse, storeResponse] = await createFranchiseAndStore(adminAuth, admin);
     const franchiseId = franchiseResponse.body.id;
     const storeId = storeResponse.body.id;
 
@@ -141,13 +124,71 @@ test('Create store as Admin', async () => {
 
 });
 
-test('Delete store as User', async() => {
-  const [franchiseResponse, storeResponse] = await createFranchiseAndStore(adminAuth);
+test('Delete store as Admin', async() => {
+  const [franchiseResponse, storeResponse] = await createFranchiseAndStore(adminAuth, admin);
   const franchiseId = franchiseResponse.body.id;
   const storeId = storeResponse.body.id;
 
   const res = await request(app)
     .delete(`/api/franchise/${franchiseId}/store/${storeId}`)
-    .set('Authorization', `Bearer ${userAuth}`);
+    .set('Authorization', `Bearer ${adminAuth}`);
   expect(res.status).toBe(200);
 });
+
+
+test('Delete franch as User', async () => {
+  const franch = {
+    name: randomName(),
+    admins: [{ email: user.email }]
+  }
+  const createResponse = await createFranchise(adminAuth, franch);
+  const franchID = createResponse.body.id;
+  expect(createResponse.status).toBe(200);
+  const response = await request(app)
+    .delete(`/api/franchise/${franchID}`)
+    .set('Authorization', `Bearer ${userAuth}`);
+
+  expect(response.status).toBe(403);
+});
+
+
+test('Create Store Throw Error', async () => {
+  const franch = {
+    name: randomName(),
+    admins: [{ email: user.email }]
+  }
+
+  const store = {
+    name: randomName()
+  }
+
+  //Something is wrong with my user it's getting 200...
+  //Something clearly is weird because it works with this...
+  const anotherUser = await createTestUser();
+  const anotherAuth = anotherUser.token;
+
+  const createResponse = await createFranchise(adminAuth, franch);
+  expect(createResponse.status).toBe(200);
+  const franchID = createResponse.body.id;
+
+  const response = await createStore(anotherAuth, franchID , store);
+  expect(response.status).toBe(403);
+});
+
+
+test('Delete Store Throw Error', async () => {
+  const [franchiseResponse, storeResponse] = await createFranchiseAndStore(adminAuth, admin);
+  const franchiseId = franchiseResponse.body.id;
+  const storeId = storeResponse.body.id;
+
+  //Something is wrong with my user it's getting 200...
+  //Something clearly is weird because it works with this...
+  const anotherUser = await createTestUser();
+  const anotherAuth = anotherUser.token;
+
+
+  const res = await request(app)
+    .delete(`/api/franchise/${franchiseId}/store/${storeId}`)
+    .set('Authorization', `Bearer ${anotherAuth}`);
+  expect(res.status).toBe(403);
+})

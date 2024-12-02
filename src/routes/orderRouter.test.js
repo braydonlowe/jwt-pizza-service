@@ -53,5 +53,14 @@ test('getMenu', async () => {
     .get('/api/order/menu');
 
     expect(response.status).toBe(200);
-})
+});
 
+
+
+test('CreateOrder', async () => {
+    const orderData = {
+        franchiseId: 1,
+        storeId: 1,
+        items: [{}]
+    }
+})
