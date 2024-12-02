@@ -1,6 +1,5 @@
 const { DB } = require('./database');
 const { Role } = require('./database');
-const randomName = require('../utils/randomName');
 
 const config = {
     db: {

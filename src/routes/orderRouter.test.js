@@ -3,7 +3,6 @@ const request = require('supertest');
 const { createAdminUser } = require('../utils/createAdminUser');
 const { createTestUser } = require('../utils/createUser');
 const { createFranchiseAndStore } = require('../utils/createFranchiseAndStore');
-const randomName = require('../utils/randomName');
 require('jest-fetch-mock').enableMocks();
 
 let adminAuth;

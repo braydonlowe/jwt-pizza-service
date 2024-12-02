@@ -1,6 +1,4 @@
 /* istanbul ignore file */
-const request = require('supertest');
-const app = require('../service');
 const { createFranchise } = require('../utils/createFranchise');
 const { createStore } = require('../utils/createStore');
 const randomName = require('../utils/randomName');
