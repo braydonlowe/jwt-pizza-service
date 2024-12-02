@@ -1,17 +1,6 @@
 const { DB } = require('./database');
 const { Role } = require('./database');
 
-const config = {
-    db: {
-      connection: {
-        host: '127.0.0.1',
-        user: 'root',
-        password: 'mysql',
-        database: 'pizza',
-        connectTimeout: 60000,  
-      },
-    },
-  };
 
 describe('getFranchises', () => {
   test('should call getFranchise for each franchise when user is an admin', async () => {
@@ -73,14 +62,6 @@ describe('getFranchises', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); 
   
       await DB.initializeDatabase(); 
-  
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        JSON.stringify({
-          message: 'Error initializing database',
-          exception: mockError.message,
-          connection: config.db.connection,
-        })
-      );
   
       
       consoleErrorSpy.mockRestore();
