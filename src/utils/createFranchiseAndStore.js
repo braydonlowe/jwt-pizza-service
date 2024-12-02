@@ -18,5 +18,6 @@ async function createFranchiseAndStore(adminToken, adminUser) {
   
     return [franchiseResponse, storeResponse];
   }
+  
 
 module.exports = { createFranchiseAndStore }
