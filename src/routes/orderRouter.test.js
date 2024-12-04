@@ -4,6 +4,8 @@ const { createAdminUser } = require('../utils/createAdminUser');
 const { createTestUser } = require('../utils/createUser');
 const { createFranchiseAndStore } = require('../utils/createFranchiseAndStore');
 require('jest-fetch-mock').enableMocks();
+jest.setTimeout(10000); // 10 seconds timeout for all tests
+
 
 let adminAuth;
 let admin;

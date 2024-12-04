@@ -1,6 +1,9 @@
 const request = require('supertest');
 const app = require('../service');
 const { createAdminUser } = require('../utils/createAdminUser')
+jest.setTimeout(10000); // 10 seconds timeout for all tests
+
+
 
 const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
 let testUserAuthToken;

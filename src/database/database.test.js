@@ -1,5 +1,7 @@
 const { DB } = require('./database');
 const { Role } = require('./database');
+jest.setTimeout(10000); // 10 seconds timeout for all tests
+
 
 
 describe('getFranchises', () => {

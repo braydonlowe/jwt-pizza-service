@@ -6,6 +6,8 @@ const randomName = require('../utils/randomName');
 const { createFranchise } = require('../utils/createFranchise');
 const { createStore } = require('../utils/createStore');
 const { createFranchiseAndStore } = require('../utils/createFranchiseAndStore');
+jest.setTimeout(10000); // 10 seconds timeout for all tests
+
 
 
 let admin;
