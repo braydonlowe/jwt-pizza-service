@@ -83,7 +83,7 @@ incrementRequests(method) {
 }
 
 sendMetricToGrafana(metricPrefix, httpMethod, metricName, metricValue) {
-  const metric = `${metricPrefix},source=${config.source},method=${httpMethod} ${metricName}=${metricValue}`;
+  const metric = `${metricPrefix},source=${config.metrics.source},method=${httpMethod} ${metricName}=${metricValue}`;
 
   return fetch(`${config.metrics.url}`, {
     method: 'post',
