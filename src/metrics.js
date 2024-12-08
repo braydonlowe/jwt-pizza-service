@@ -111,9 +111,17 @@ requestTracker(req, res, next) {
   metrics.incrementRequests(method);
   
   const trackMetrics = async () => {
+    if (res.statusCode !== 200) {
+      //If its a failure we can go ahead and just get out.
+      metrics.authAttempts.failed++;
+      return;
+    } else {
+      metrics.authAttempts.successful++;
+    }
+
     if (method === 'PUT' && path === '/api/auth') {
       if (res.statusCode === 200) {
-        metrics.users.in;
+        metrics.users.in++;
       }
     }
 
@@ -133,15 +141,8 @@ requestTracker(req, res, next) {
       }
       metrics.latency = Date.now() - start;
     }
-
-    if (res.statusCode !== 200) {
-      metrics.authAttempts.failed++;
-    } else {
-      metrics.authAttempts.successful++;
-    }
   }
   res.on('finish', async () => {
-    console.log(res.statusCode);
     await trackMetrics();
   })
   next();
