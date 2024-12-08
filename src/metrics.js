@@ -61,7 +61,7 @@ constructor() {
     
     //Latency: service endpoint, Pizza creation
     this.sendMetricToGrafana('latency', 'order', 'ms', this.latency);
-  }, 21600000);
+  }, 10000);
   //Changed from 10000
   timer.unref();
 
@@ -74,7 +74,7 @@ constructor() {
     this.sendMetricToGrafana('pizza', 'sold', 'perMinute', this.pizza.sold);
     this.sendMetricToGrafana('pizza', 'creationFailures', 'perMinute', this.pizza.creationFailures);
     this.sendMetricToGrafana('pizza', 'revenue', 'perMinute', this.pizza.revPerMin);
-  }, 21600000);
+  }, 60000);
   //Changed from 60000
   timer2.unref();
 }
