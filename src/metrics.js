@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 const config = require('./config.js');
 const os = require('os');
 
