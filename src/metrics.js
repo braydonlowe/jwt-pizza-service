@@ -34,6 +34,8 @@ constructor() {
   }
   this.latency = 0;
 
+  this.requestLatency = 0;
+
   this.authAttempts = {
     successful: 0,
     failed: 0
@@ -74,6 +76,8 @@ constructor() {
     this.sendMetricToGrafana('pizza', 'sold', 'perMinute', this.pizza.sold);
     this.sendMetricToGrafana('pizza', 'creationFailures', 'perMinute', this.pizza.creationFailures);
     this.sendMetricToGrafana('pizza', 'revenue', 'perMinute', this.pizza.revPerMin);
+    //HTTP request latency
+    this.sendMetricToGrafana('http', 'request', 'latency', this.requestLatency);
   }, 60000);
   //Changed from 60000
   timer2.unref();
@@ -144,6 +148,7 @@ requestTracker(req, res, next) {
   }
   res.on('finish', async () => {
     await trackMetrics();
+    metrics.requestLatency = Date.now() - start;
   })
   next();
 }
