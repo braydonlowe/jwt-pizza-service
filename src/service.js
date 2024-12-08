@@ -4,6 +4,7 @@ const orderRouter = require('./routes/orderRouter.js');
 const franchiseRouter = require('./routes/franchiseRouter.js');
 const version = require('./version.json');
 const config = require('./config.js');
+const metrics = require('./metrics');
 
 const app = express();
 app.use(express.json());
@@ -36,6 +37,8 @@ app.get('/', (req, res) => {
     version: version.version,
   });
 });
+
+app.use(metrics.requestTracker.bind(metrics));
 
 app.use('*', (req, res) => {
   res.status(404).json({
