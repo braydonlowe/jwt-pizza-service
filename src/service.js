@@ -38,6 +38,8 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use(metrics.requestTracker.bind(metrics));
+
 app.use('*', (req, res) => {
   res.status(404).json({
     message: 'unknown endpoint',
