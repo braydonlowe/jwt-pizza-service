@@ -47,10 +47,10 @@ constructor() {
 
   // This will periodically sent metrics to Grafana
   const timer = setInterval(() => {
-    this.sendMetricToGrafana('request', 'all', 'total', this.totalRequests);
+    this.sendMetricToGrafana('requestHTTP', 'all', 'total', this.totalRequests);
     //Total requests
     Object.entries(this.totalSent).forEach(([method, count]) => {
-      this.sendMetricToGrafana('request', method, 'total', count);
+      this.sendMetricToGrafana('requestHTTP', method, 'total', count);
     });
     //For the CPU
     this.sendMetricToGrafana('cpu', 'usage', 'percentage', getCpuUsagePercentage());
