@@ -84,11 +84,11 @@ incrementRequests(method) {
 
 sendMetricToGrafana(metricPrefix, httpMethod, metricName, metricValue) {
   const metric = `${metricPrefix},source=${config.metrics.source},method=${httpMethod} ${metricName}=${metricValue}`;
-
+  console.log(metric)
   return fetch(`${config.metrics.url}`, {
     method: 'post',
     body: metric,
-    headers: { Authorization: `Bearer ${config.userId}:${config.apiKey}` },
+    headers: { Authorization: `Bearer ${config.metrics.userId}:${config.metrics.apiKey}` },
   })
     .then((response) => {
       if (!response.ok) {
