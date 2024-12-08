@@ -6,7 +6,8 @@
   "scripts": {
     "run": "cd src && node index.js",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start": "node src/index.js"
   },
   "license": "MIT",
   "dependencies": {

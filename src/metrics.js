@@ -84,7 +84,6 @@ incrementRequests(method) {
 
 sendMetricToGrafana(metricPrefix, httpMethod, metricName, metricValue) {
   const metric = `${metricPrefix},source=${config.metrics.source},method=${httpMethod} ${metricName}=${metricValue}`;
-  console.log(metric)
   return fetch(`${config.metrics.url}`, {
     method: 'post',
     body: metric,
@@ -105,53 +104,46 @@ sendMetricToGrafana(metricPrefix, httpMethod, metricName, metricValue) {
 requestTracker(req, res, next) {
   const method = req.method;
   const path = req.path;
+  const start = Date.now();
 
-  this.incrementRequests(method);
-
-  if (method === 'PUT' && path === '/api/auth') {
-    res.on('finish', () => {
+  metrics.incrementRequests(method);
+  
+  const trackMetrics = async () => {
+    if (method === 'PUT' && path === '/api/auth') {
       if (res.statusCode === 200) {
-        this.users.in++;
+        metrics.users.in;
       }
-    });
-  }
-
-  if (method === 'DELETE' && path === '/api/auth') {
-    res.on('finish', () => {
-      if (res.statusCode === 200) {
-        this.users.in--;
-      }
-    });
-  }
-
-  if (method === 'POST' && path === '/api/order') {
-    const start = Date.now();
-    const price = req.body.items.reduce((total, item) => total + item.price, 0);
-
-    res.on('finish', () => {
-      if (res.statusCode === 200) {
-        this.pizza.sold++;
-        this.pizza.revPerMin += price;
-      } else {
-        this.pizza.creationFailures++;
-      }
-      this.latency = start - Date.now()
-    });
-  }
-
-  //Track auth
-  res.on('finish', () => {
-    if (res.statusCode !== 200) {
-      this.authAttempts.failed++;
-    } else {
-      this.authAttempts.successful++;
     }
-  })
 
+    if (method === 'DELETE' && path === '/api/auth') {
+      if (res.statusCode === 200) {
+        metrics.users.in--;
+      }
+    }
+
+    if (method === 'POST' && path === '/api/order') {
+      const price = req.body.items.reduce((total, item) => total + item.price, 0);
+      if (res.statusCode === 200) {
+        metrics.pizza.sold++;
+        metrics.pizza.revPerMin += price;
+      } else {
+        metrics.pizza.creationFailures++;
+      }
+      metrics.latency = Date.now() - start;
+    }
+
+    if (res.statusCode !== 200) {
+      metrics.authAttempts.failed++;
+    } else {
+      metrics.authAttempts.successful++;
+    }
+  }
+  res.on('finish', async () => {
+    console.log(res.statusCode);
+    await trackMetrics();
+  })
   next();
 }
-
-
 }
 const metrics = new Metrics();
 module.exports = metrics;

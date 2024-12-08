@@ -17,6 +17,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(metrics.requestTracker);
+
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
 apiRouter.use('/auth', authRouter);
@@ -37,8 +39,6 @@ app.get('/', (req, res) => {
     version: version.version,
   });
 });
-
-app.use(metrics.requestTracker.bind(metrics));
 
 app.use('*', (req, res) => {
   res.status(404).json({
