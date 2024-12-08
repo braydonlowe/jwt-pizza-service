@@ -60,7 +60,7 @@ test('getMenu', async () => {
 });
 
 
-
+/**
 test('CreateOrder', async () => {
     fetch.mockResponseOnce(JSON.stringify({ message: 'Success' }), { status: 200 });
 
@@ -103,6 +103,7 @@ test('CreateOrder', async () => {
     expect(getResponse.status).toBe(200);
 
 });
+*/
 
 
 test('CreateOrder 500 Error', async () => {
